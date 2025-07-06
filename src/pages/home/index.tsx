@@ -1,32 +1,35 @@
 import { Play } from "phosphor-react";
+import { CountdownContainer, FormContainer, HomeCantainer, MinutesAmountInput, Separator, StartCountdownButton, TaskInput } from "./style";
+//import { Form } from "react-router-dom";
 
 export function Home() {
     return (
-        <div>
+        <HomeCantainer>
             <form action="">
 
-                <div>
+                <FormContainer>
                     <label htmlFor="task">Vou trabalhar em</label>
-                    <input id="task" />
+                    <TaskInput id="task" placeholder=" Dê um nome para sua tarefa " autoComplete="off"/>
+
                     <label htmlFor="minutesAmount">Durante</label>
-                    <input type="number" id="minutesAmount" />
+                    <MinutesAmountInput type="number" id="minutesAmount" placeholder="00"/>
                     <span>minutos.</span>
-                </div>
+                </FormContainer>
 
 
-                <div>
+                <CountdownContainer>
                     <span>0</span>
                     <span>0</span>
-                    <span>:</span>
+                    <Separator>:</Separator>
                     <span>0</span>
                     <span>0</span>
-                </div>
+                </CountdownContainer>
 
-                <button type="submit">
+                <StartCountdownButton disabled type="submit">
                     <Play size={24} />
                     Começar
-                </button>
+                </StartCountdownButton>
             </form>
-        </div>
+        </HomeCantainer>
     );
 }
