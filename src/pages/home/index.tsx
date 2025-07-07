@@ -9,10 +9,24 @@ export function Home() {
 
                 <FormContainer>
                     <label htmlFor="task">Vou trabalhar em</label>
-                    <TaskInput id="task" placeholder=" Dê um nome para sua tarefa " autoComplete="off"/>
+                    <TaskInput id="task" list="Task-suggestions" placeholder=" Dê um nome para sua tarefa " autoComplete="off" />
 
+                    <datalist id="Task-suggestions">
+                        <option value="Projeto 1"></option>
+                        <option value="Projeto 2"></option>
+                        <option value="Projeto 3"></option>
+                    </datalist>
                     <label htmlFor="minutesAmount">Durante</label>
-                    <MinutesAmountInput type="number" id="minutesAmount" placeholder="00"/>
+                    <MinutesAmountInput
+                        type="number"
+                        id="minutesAmount"
+                        placeholder="00"
+                        step={5} //definição de incremento
+                        min={5} //definição de valor mínimo
+                        max={60} //definição de valor máximo
+                        autoComplete="off"
+                    />
+
                     <span>minutos.</span>
                 </FormContainer>
 

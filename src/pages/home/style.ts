@@ -51,10 +51,21 @@ const BaseInput = styled.input`
 export const TaskInput = styled(BaseInput)`
     flex: 1;
 
+    &::-webkit-calendar-picker-indicator {
+        display: none !important;
+        }
 `;
 
 export const MinutesAmountInput = styled(BaseInput)`
     width: 4rem;
+    text-align: center;
+    appearance: textfield;
+    -moz-appearance: textfield;
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 `;
 
 export const CountdownContainer = styled.div`
