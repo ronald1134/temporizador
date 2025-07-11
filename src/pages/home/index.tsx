@@ -1,15 +1,40 @@
 import { Play } from "phosphor-react";
-import { CountdownContainer, FormContainer, HomeCantainer, MinutesAmountInput, Separator, StartCountdownButton, TaskInput } from "./style";
-//import { Form } from "react-router-dom";
+import { useForm } from 'react-hook-form'
+
+import {
+    CountdownContainer,
+    FormContainer,
+    HomeCantainer,
+    MinutesAmountInput,
+    Separator,
+    StartCountdownButton,
+    TaskInput
+} from "./style";
 
 export function Home() {
+    // Configuração do react-hook-form
+    const { register, handleSubmit, watch } = useForm()
+
+    function handleCreateNewCycle(data: unknown) {//IREI ARRUMAR AQUI DPS
+        console.log(data);
+    }
+
+    const task = watch('task'); // Observa o campo 'task' para reatividade
+    const isSubmitDisabled = !task; // Desabilita o botão se 'task' estiver vazio
+
     return (
         <HomeCantainer>
-            <form action="">
+            <form onSubmit={handleSubmit(handleCreateNewCycle)} action="">
 
                 <FormContainer>
                     <label htmlFor="task">Vou trabalhar em</label>
-                    <TaskInput id="task" list="Task-suggestions" placeholder=" Dê um nome para sua tarefa " autoComplete="off" />
+                    <TaskInput
+                        id="task"
+                        list="Task-suggestions"
+                        placeholder=" Dê um nome para sua tarefa "
+                        autoComplete="off"
+                        {...register('task')} // Registro do campo de tarefa no react-hook-form
+                    />
 
                     <datalist id="Task-suggestions">
                         <option value="Projeto 1"></option>
@@ -25,6 +50,7 @@ export function Home() {
                         min={5} //definição de valor mínimo
                         max={60} //definição de valor máximo
                         autoComplete="off"
+                        {...register('minutesAmount', { valueAsNumber: true })} // Registro do campo de minutos no react-hook-form
                     />
 
                     <span>minutos.</span>
@@ -39,7 +65,7 @@ export function Home() {
                     <span>0</span>
                 </CountdownContainer>
 
-                <StartCountdownButton disabled type="submit">
+                <StartCountdownButton disabled={!isSubmitDisabled} type="submit">
                     <Play size={24} />
                     Começar
                 </StartCountdownButton>
