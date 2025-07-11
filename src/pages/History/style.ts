@@ -17,6 +17,16 @@ export const HistoryList = styled.div`
     overflow: auto;//isso faz com que a lista de histórico fique rolável se o conteúdo for maior que a tela
     margin-top: 2rem;
 
+    caption{
+        font-size: 1.5rem;
+        color: ${props => props.theme['gray-100']};
+        margin-bottom: 1.6rem;
+        text-align: left;
+        font-weight: bold;
+        padding-left: 0.40rem;
+
+    }
+
     table {
         width: 100%;
         border-collapse: collapse;
