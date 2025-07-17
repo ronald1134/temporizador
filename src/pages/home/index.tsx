@@ -47,16 +47,29 @@ export function Home() {
         },
     })
     const activeCycle = cycles.find(cycle => cycle.id === activeCycleId);
+
     useEffect(() => {
+        let interval: number;
+
         if (activeCycle) {
-            setInterval(() => {
-                setAmountSecondsPassed(differenceInSeconds(new Date(), new Date(activeCycle.startDate))) // Atualiza os segundos passados com base no ciclo ativo
+            interval = setInterval(() => {
+                setAmountSecondsPassed(differenceInSeconds(new Date(), activeCycle.startDate),
+                ) // Atualiza os segundos passados com base no ciclo ativo
             }, 1000)
+
+            return () => {
+                clearInterval(interval);
+            }
+        }
+
+        return () => {
+
         }
     }, [activeCycle]); // Efeito para monitorar mudanças no ciclo ativo
 
     function handleCreateNewCycle(data: NewCycleFormData) {
         const id = String(new Date().getTime());
+
         const newCycle: Cycle = {
             id,
             task: data.task,
@@ -66,6 +79,7 @@ export function Home() {
 
         setCycles(state => [...state, newCycle]); // Atualiza o estado com o novo ciclo
         setActiveCycleId(id); // Define o ID do ciclo ativo
+        setAmountSecondsPassed(0); // Reseta os segundos passados
         reset(); // Reseta os campos do formulário após o envio
     }
 
@@ -80,6 +94,12 @@ export function Home() {
 
     const minutes = String(minutesAmount).padStart(2, '0'); // Formata os minutos para ter dois dígitos
     const seconds = String(secondsAmount).padStart(2, '0'); // Formata
+
+    useEffect(() => {
+        if (activeCycle){
+            document.title = `${minutes}:${seconds}`; // Atualiza o título da página com o tempo restante
+        }
+    },[minutes, seconds, activeCycle]); // Efeito para monitorar mudanças nos minutos e segundos
 
     const task = watch('task'); // Observa o campo 'task' para reatividade
     const isSubmitDisabled = !task; // Desabilita o botão se 'task' estiver vazio
