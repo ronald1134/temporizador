@@ -1,4 +1,4 @@
-import { Play } from "phosphor-react";
+import { HandPalm, Play } from "phosphor-react";
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as zod from 'zod';
@@ -12,6 +12,7 @@ import {
     MinutesAmountInput,
     Separator,
     StartCountdownButton,
+    StopCountdownButton,
     TaskInput
 } from "./style";
 
@@ -30,6 +31,7 @@ interface Cycle {
     task: string;
     minutesAmount: number;
     startDate: Date;
+    interruptedDate?: Date;
 }
 
 
@@ -82,9 +84,19 @@ export function Home() {
         setAmountSecondsPassed(0); // Reseta os segundos passados
         reset(); // Reseta os campos do formulário após o envio
     }
+    function handleInterruptCycle() {
 
-    // Busca o ciclo ativo pelo ID
-    console.log(activeCycle);
+        setCycles(cycles => cycles.map(cyle => {
+            if (cyle.id === activeCycleId) {
+                return { ...cyle, interruptedDate: new Date() }; // Marca o ciclo como interrompido
+            } else {
+                return cyle; // Retorna o ciclo inalterado se não for o ativo
+            }
+        }),
+        )
+        setActiveCycleId(null)
+    }
+    console.log(activeCycle);// mostra o ciclo ativo no console
 
     const totalSeconds = activeCycle ? activeCycle.minutesAmount * 60 : 0; // Calcula o total de segundos do ciclo ativo
     const currentSeconds = activeCycle ? totalSeconds - amountSecondsPassed : 0; // Calcula os segundos restantes
@@ -96,10 +108,10 @@ export function Home() {
     const seconds = String(secondsAmount).padStart(2, '0'); // Formata
 
     useEffect(() => {
-        if (activeCycle){
+        if (activeCycle) {
             document.title = `${minutes}:${seconds}`; // Atualiza o título da página com o tempo restante
         }
-    },[minutes, seconds, activeCycle]); // Efeito para monitorar mudanças nos minutos e segundos
+    }, [minutes, seconds, activeCycle]); // Efeito para monitorar mudanças nos minutos e segundos
 
     const task = watch('task'); // Observa o campo 'task' para reatividade
     const isSubmitDisabled = !task; // Desabilita o botão se 'task' estiver vazio
@@ -115,6 +127,7 @@ export function Home() {
                         list="Task-suggestions"
                         placeholder=" Dê um nome para sua tarefa "
                         autoComplete="off"
+                        disabled={!!activeCycle}
                         {...register('task')} // Registro do campo de tarefa no react-hook-form
                     />
 
@@ -132,6 +145,7 @@ export function Home() {
                         min={5} //definição de valor mínimo
                         max={60} //definição de valor máximo
                         autoComplete="off"
+                        disabled={!!activeCycle}
                         {...register('minutesAmount', { valueAsNumber: true })} // Registro do campo de minutos no react-hook-form
                     />
 
@@ -147,10 +161,17 @@ export function Home() {
                     <span>{seconds[1]}</span>
                 </CountdownContainer>
 
-                <StartCountdownButton disabled={isSubmitDisabled} type="submit">
-                    <Play size={24} />
-                    Começar
-                </StartCountdownButton>
+                {activeCycle ? (
+                    <StopCountdownButton onClick={handleInterruptCycle} type="button">
+                        <HandPalm size={24} />
+                        interromper
+                    </StopCountdownButton>
+                ) : (
+                    <StartCountdownButton disabled={isSubmitDisabled} type="submit">
+                        <Play size={24} />
+                        Começar
+                    </StartCountdownButton>
+                )}
             </form>
         </HomeCantainer>
     );
