@@ -31,7 +31,6 @@ interface CyclesContexProviderProps {
     children: ReactNode
 }
 
-
 interface CyclesState {
     cycles: Cycle[]
     activeCycleId: string | null
@@ -40,34 +39,45 @@ interface CyclesState {
 
 export function CyclesContextProvider({ children }: CyclesContexProviderProps) {
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const [cyclesState, dispatch] = useReducer((state: CyclesState, action: any) => {
-        console.log('action', action)
-        console.log('state', state)
-        if (action.type === 'ADD_NEW_CYCLE') {
-            return {
-                ...state,
-                cycles: [...state.cycles, action.payload.newCycle],
-                activeCycleId: action.payload.newCycle.id,
-            }
-        }
-
-        if (action.type === 'INTERRUPT_CURRENT_CYCLE') {
-            return {
-                ...state,
-                cycles: [state.cycles.map(cyle => {
-                    if (cyle.id === state.activeCycleId) {
-                        return { ...cyle, interruptedDate: new Date() }; // Marca o ciclo como interrompido
-                    } else {
-                        return cyle; // Retorna o ciclo inalterado se não for o ativo
+    const [cyclesState, dispatch] = useReducer(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (state: CyclesState, action: any) => {
+            switch (action.type) {
+                case 'ADD_NEW_CYCLE':
+                    return {
+                        ...state,
+                        cycles: [...state.cycles, action.payload.newCycle],
+                        activeCycleId: action.payload.newCycle.id,
                     }
-                })],
-                activeCycleId: null,    
-            }
-        }
 
-        return state
-    }, {
+                case 'INTERRUPT_CURRENT_CYCLE': return {
+                    ...state,
+                    cycles: [state.cycles.map(cyle => {
+                        if (cyle.id === state.activeCycleId) {
+                            return { ...cyle, interruptedDate: new Date() };
+                        } else {
+                            return cyle;
+                        }
+                    })],
+                    activeCycleId: null,
+                }
+
+                case 'MARK_CURRENT_CYCLE_AS_FINISHED':
+                    return {
+                        ...state,
+                        cycles: state.cycles.map(cycle => {
+                            if (cycle.id === action.payload.activeCycleId) {
+                                return { ...cycle, finishedDate: new Date() }; // Marca o ciclo como finalizado
+                            } else {
+                                return cycle; // Retorna o ciclo inalterado se não for o ativo
+                            }
+                        }),
+                        activeCycleId: null, // Reseta o ciclo ativo
+                    }
+                default:
+                    return state;
+            }
+        }, {
         cycles: [],
         activeCycleId: null,
     },
@@ -89,17 +99,6 @@ export function CyclesContextProvider({ children }: CyclesContexProviderProps) {
                 activeCycleId,
             },
         })
-
-
-        // setCycles(state =>
-        //     state.map(cycle => {
-        //         if (cycle.id === activeCycleId) {
-        //             return { ...cycle, finishedDate: new Date() };
-        //         } else {
-        //             return cycle; // Retorna o ciclo inalterado se não for o ativo
-        //         }
-        //     }),
-        // )
     }
 
     function createNewCycle(data: createCycleData) {
@@ -118,8 +117,7 @@ export function CyclesContextProvider({ children }: CyclesContexProviderProps) {
                 newCycle,
             },
         })
-        // setCycles(state => [...state, newCycle]); // Atualiza o estado com o novo ciclo
-        setAmountSecondsPassed(0); // Reseta os segundos passados
+        setAmountSecondsPassed(0);
     }
 
     function interrptCurrentCycle() {
@@ -129,7 +127,6 @@ export function CyclesContextProvider({ children }: CyclesContexProviderProps) {
                 activeCycleId,
             },
         })
-
     }
 
     return (
