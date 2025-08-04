@@ -30,8 +30,8 @@ export function NewCycleForm() {
                 type="number"
                 id="minutesAmount"
                 placeholder="00"
-                step={1} //definição de incremento
-                min={1} //definição de valor mínimo
+                step={5} //definição de incremento
+                min={5} //definição de valor mínimo
                 max={60} //definição de valor máximo
                 autoComplete="off"
                 disabled={!!activeCycle}
