@@ -1,4 +1,5 @@
 import { ActionTypes } from "./actions";
+import { produce } from "immer"
 
 export interface Cycle {
     id: string;
@@ -14,41 +15,41 @@ interface CyclesState {
     activeCycleId: string | null
 }
 
-
-
-
 export function cyclesReducer(state: CyclesState, action: any) {
     switch (action.type) {
         case ActionTypes.ADD_NEW_CYCLE:
-            return {
-                ...state,
-                cycles: [...state.cycles, action.payload.newCycle],
-                activeCycleId: action.payload.newCycle.id,
+
+            return produce(state, (draft) => {
+                draft.cycles.push(action.payload.newCycle);
+                draft.activeCycleId = action.payload.newCycle.id
+            })
+
+        case ActionTypes.INTERRUPT_CURRENT_CYCLE:
+            {
+                return produce(state, draft => {
+                    const currentCycleIndex = state.cycles.findIndex(cycle => {
+                        return cycle.id === state.activeCycleId
+                    })
+                    if (currentCycleIndex < 0) {
+                        return state
+                    }
+                    draft.activeCycleId = null
+                    draft.cycles[currentCycleIndex].interruptedDate = new Date()
+                })
             }
 
-        case ActionTypes.INTERRUPT_CURRENT_CYCLE: return {
-            ...state,
-            cycles: [state.cycles.map(cyle => {
-                if (cyle.id === state.activeCycleId) {
-                    return { ...cyle, interruptedDate: new Date() };
-                } else {
-                    return cyle;
-                }
-            })],
-            activeCycleId: null,
-        }
-
         case ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED:
-            return {
-                ...state,
-                cycles: state.cycles.map(cycle => {
-                    if (cycle.id === action.payload.activeCycleId) {
-                        return { ...cycle, finishedDate: new Date() }; // Marca o ciclo como finalizado
-                    } else {
-                        return cycle; // Retorna o ciclo inalterado se não for o ativo
+            {
+                return produce(state, draft => {
+                    const currentCycleIndex = state.cycles.findIndex(cycle => {
+                        return cycle.id === state.activeCycleId
+                    })
+                    if (currentCycleIndex < 0) {
+                        return state
                     }
-                }),
-                activeCycleId: null, // Reseta o ciclo ativo
+                    draft.activeCycleId = null
+                    draft.cycles[currentCycleIndex].finishedDate = new Date()
+                })
             }
         default:
             return state;
