@@ -14,7 +14,7 @@ export const HistoryContainer = styled.main`
 
 export const HistoryList = styled.div`
     flex: 1;
-    overflow: auto;//isso faz com que a lista de histórico fique rolável se o conteúdo for maior que a tela
+    overflow: auto;
     margin-top: 2rem;
 
     caption{
@@ -24,7 +24,6 @@ export const HistoryList = styled.div`
         text-align: left;
         font-weight: bold;
         padding-left: 0.40rem;
-
     }
 
     table {
@@ -37,10 +36,8 @@ export const HistoryList = styled.div`
             font-size: 0.875rem;
             line-height: 1.6;
             padding: 1rem;
-
             background-color: ${props => props.theme['gray-600']};
             color: ${props => props.theme['gray-100']};
-
 
             &:first-child  {
                 width: 50%;
@@ -52,7 +49,6 @@ export const HistoryList = styled.div`
                 padding-right: 1.6rem;
             }
         }
-
 
         td {
             background-color: ${props => props.theme['gray-700']};
@@ -73,15 +69,16 @@ export const HistoryList = styled.div`
 `;
 
 interface StatusProps {
-    statusColor: keyof typeof STATUS_COLORS; //keyof typeof STATUS_COLORS faz com que o statusColor só possa ser uma das chaves do objeto STATUS_COLORS
+    $statusColor: keyof typeof STATUS_COLORS;
 }
+
 const STATUS_COLORS = {
     yellow: 'yellow-500',
     red: 'red-500',
     green: 'green-500',
-}as const; //as const faz com que o objeto seja um objeto literal, ou seja, as chaves não podem ser alteradas
+} as const;
 
-export const Status = styled.span< StatusProps >`
+export const Status = styled.span<StatusProps>`
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -91,6 +88,6 @@ export const Status = styled.span< StatusProps >`
         width: 0.5rem;
         height: 0.5rem;
         border-radius: 50%;
-        background-color: ${props => props.theme[STATUS_COLORS[props.statusColor]]};//pega a cor do objeto STATUS_COLORS de acordo com o statusColor passado como prop
+        background-color: ${props => props.theme[STATUS_COLORS[props.$statusColor]]};
     }
 `;
