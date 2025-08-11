@@ -14,14 +14,14 @@ export function addNewCycleAction(newCycle : Cycle) {
         },
     }
 } 
-export function markCurrentCycleAsFinisheadAction() {
+export function markCurrentCycleAsFinishedAction() {
     return {
-        type: ActionTypes.ADD_NEW_CYCLE
+        type: ActionTypes.MARK_CURRENT_CYCLE_AS_FINISHED
     }
 }
 
-export function interrptCurrentCycleAction() {
+export function interruptCurrentCycleAction() {
     return {
-        type: ActionTypes.ADD_NEW_CYCLE
+        type: ActionTypes.INTERRUPT_CURRENT_CYCLE
     }
 } 
